@@ -9,7 +9,7 @@ import {
   HStack,
   Center,
   Text,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
@@ -19,41 +19,45 @@ import ProjectTable from "../../components/tables/project-table";
 import Counter from "../../components/cards/counter";
 import { getProjectOverviewData } from "../../lib/project-utils";
 import ApexChart from "../../components/charts/apexchart";
+import { Select as ReactSelect } from "chakra-react-select";
 
 export default function ProjectsPage(props) {
   const { data } = props;
 
   if (!data) {
     return (
-        <Flex
+      <Flex
         width={"80vw"}
         height={"80vh"}
         alignContent={"center"}
         justifyContent={"center"}
-         >
+      >
         <Center>
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
-      </Center>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </Center>
       </Flex>
     );
   }
 
-  const { counters, projectStats, walletStats, projects } = data;
-
+  const { roundName, counters, projectStats, walletStats, projects } = data;
 
   const brandColor = useColorModeValue("blue", "white");
   const boxBg = useColorModeValue("gray.100", "whiteAlpha.100");
 
-  
-
   return (
     <Box margin="auto" width="80%">
+      <Center boxShadow={"xl"} bg={"white"} p="4" rounded={"md"} mb="20px">
+      <Text textTransform={"uppercase"}>
+      {roundName} ROUND
+      </Text>
+      </Center>
+
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap="20px" mb="20px">
         <Counter
           key={counters.totalProjects.name}
@@ -110,60 +114,60 @@ export default function ProjectsPage(props) {
         />
       </SimpleGrid>
       <Box boxShadow={"xl"} bg={"white"} p="4" rounded={"md"} mb="20px">
-      
-      
-      <SimpleGrid columns={2}  gap="100px">
-        <SimpleGrid>
-        <Text mb="20px" textTransform={"uppercase"} textColor="gray.400">Project Indicators</Text>
-        {projectStats.map(function (t) {
-          return (
-            <Flex align="center">
-              <Text me="10px" fontSize="sm" width="50%">
-              {t.name}
-              </Text>
-              <Text mr="10px" fontSize="sm"  width="20px">
-                {t.value}
-              </Text>
-              <Progress
-                variant="table"
-                colorScheme={t.type=="positive" ? "green" : "red"}
-                h="8px"
-                w="50%"
-                max={t.max}
-                value={t.value}
-                backgroundColor="gray.100"
-              />
-
-            </Flex>
-          );
-        })}
+        <SimpleGrid columns={2} gap="100px">
+          <SimpleGrid>
+            <Text mb="20px" textTransform={"uppercase"} textColor="gray.400">
+              Project Indicators
+            </Text>
+            {projectStats.map(function (t) {
+              return (
+                <Flex align="center">
+                  <Text me="10px" fontSize="sm" width="50%">
+                    {t.name}
+                  </Text>
+                  <Text mr="10px" fontSize="sm" width="20px">
+                    {t.value}
+                  </Text>
+                  <Progress
+                    variant="table"
+                    colorScheme={t.type == "positive" ? "green" : "red"}
+                    h="8px"
+                    w="50%"
+                    max={t.max}
+                    value={t.value}
+                    backgroundColor="gray.100"
+                  />
+                </Flex>
+              );
+            })}
+          </SimpleGrid>
+          <SimpleGrid>
+            <Text mb="20px" textTransform={"uppercase"} textColor="gray.400">
+              Contributor Indicators
+            </Text>
+            {walletStats.map(function (t) {
+              return (
+                <Flex align="center">
+                  <Text me="10px" fontSize="sm" width="50%">
+                    {t.name}
+                  </Text>
+                  <Text mr="10px" fontSize="sm" width="40px">
+                    {t.value}
+                  </Text>
+                  <Progress
+                    variant="table"
+                    colorScheme={t.type == "positive" ? "green" : "red"}
+                    h="8px"
+                    w="50%"
+                    max={t.max}
+                    value={t.value}
+                    backgroundColor="gray.100"
+                  />
+                </Flex>
+              );
+            })}
+          </SimpleGrid>
         </SimpleGrid>
-        <SimpleGrid>
-        <Text mb="20px" textTransform={"uppercase"} textColor="gray.400">Contributor Indicators</Text>
-        {walletStats.map(function (t) {
-          return (
-            <Flex align="center">
-              <Text me="10px" fontSize="sm" width="50%">
-              {t.name}
-              </Text>
-              <Text mr="10px" fontSize="sm"  width="40px">
-                {t.value}
-              </Text>
-              <Progress
-                variant="table"
-                colorScheme={t.type=="positive" ? "green" : "red"}
-                h="8px"
-                w="50%"
-                max={t.max}
-                value={t.value}
-                backgroundColor="gray.100"
-              />
-
-            </Flex>
-          );
-        })}
-        </SimpleGrid>
-      </SimpleGrid>
       </Box>
       <ProjectTable tableData={projects} />
     </Box>

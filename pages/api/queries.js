@@ -43,37 +43,45 @@ export async function getProjectItem(projectID) {
   }
 }
 
-
 export async function getWalletItem(walletID) {
   try {
-    
-    let { data : projectData } = await supabase.rpc("wallet_projects", { arg_wallet_id: walletID});
+    let { data: projectData } = await supabase.rpc("wallet_projects", {
+      arg_wallet_id: walletID,
+    });
 
-    const { data : walletTags } = await supabase
-    .from("contributor_wallets")
-    .select(
-      `
+    const { data: walletTags } = await supabase
+      .from("contributor_wallets")
+      .select(
+        `
       tags
       `
-    )
-    .eq("id", walletID);
-
+      )
+      .eq("id", walletID);
 
     return {
       projectData,
-      walletTags
-    }
-
+      walletTags,
+    };
   } catch (error) {
     console.log(error);
     throw "query execution failed";
   }
 }
 
-
-export async function getProjects() {
+export async function getProjects(roundID="") {
   try {
-    let { data } = await supabase.from("projects").select();
+    let data;
+
+    if (roundID != undefined && roundID != "") {
+      ({ data } = await supabase
+        .from("projects")
+        .select()
+        .filter("round_id", "eq", roundID));
+
+    } else {
+      ({ data } = await supabase.from("projects").select());
+    }
+
     return data;
   } catch (error) {
     console.log(error);
@@ -91,25 +99,26 @@ export async function getWallets() {
       `
     );
 
-    console.log(walletTags)
+    console.log(walletTags);
 
     let { data: walletStats } = await supabase.rpc("wallet_stats");
 
-    
     return {
       walletTags,
-      walletStats
+      walletStats,
     };
-
   } catch (error) {
     console.log(error);
     throw "query execution failed";
   }
 }
 
-export async function getWalletsCount() {
+export async function getWalletsCount(roundID="") {
   try {
-    let { data } = await supabase.rpc("unique_contributors");
+    let { data } = await supabase.rpc("unique_contributors", {
+        arg_round_id: roundID,
+      });
+
     return data;
   } catch (error) {
     console.log(error);
@@ -117,10 +126,11 @@ export async function getWalletsCount() {
   }
 }
 
-
-export async function getRoundAttributes() {
+export async function getRoundAttributes(roundID = "") {
   try {
-    let { data } = await supabase.rpc("round_attributes");
+    let { data } = await supabase.rpc("round_attributes", {
+      arg_round_id: roundID,
+    });
     return data;
   } catch (error) {
     console.log(error);
@@ -128,10 +138,12 @@ export async function getRoundAttributes() {
   }
 }
 
-
-export async function getWalletAttributes(projectID='') {
+export async function getWalletAttributes(projectID = "", roundID = "") {
   try {
-    let { data } = await supabase.rpc("wallet_attributes_v1", { arg_project_id: projectID});
+    let { data } = await supabase.rpc("wallet_attributes_v1", {
+      arg_project_id: projectID,
+      arg_round_id: roundID,
+    });
     return data;
   } catch (error) {
     console.log(error);

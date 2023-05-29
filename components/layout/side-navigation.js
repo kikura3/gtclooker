@@ -23,6 +23,10 @@ import { useRouter } from 'next/router';
 
 const LinkItems = [
   {
+    name: "Rounds",
+    to : "/rounds"
+  },
+  {
     name: "Projects",
     to : "/projects"
   },

@@ -66,7 +66,7 @@ function Banner() {
                     sm: '0',
                   }}
                 >
-                  <Text fontSize={"sm"}>This is currently in testing. Data accuracy may vary. Gitcoin Beta Round.</Text>
+                  <Text fontSize={"sm"}>This is currently in testing. Data accuracy may vary.</Text>
                 </Stack>
               </Stack>
               
